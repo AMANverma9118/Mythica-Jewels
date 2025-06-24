@@ -10,7 +10,7 @@ function Header() {
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
                     <Link to="/" className="flex items-center">
                         <img
-                            src="https://mythica-collection.com/wp-content/uploads/2023/10/Mythica_Logo.jpg"
+                            src="ChatGPT Image Jun 24, 2025, 09_34_00 AM.png"
                             className="mr-3 h-12"
                             alt="Logo"
                         />
