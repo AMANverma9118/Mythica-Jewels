@@ -1,19 +1,30 @@
-import React from 'react'
-import Footer from './components/Footer/Footer'
-import { Outlet } from 'react-router-dom'
-import Navbar from './components/Navbar/Navbar'
+import React from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import Navbar from './components/Navbar/Navbar';
+import Footer from './components/Footer/Footer';
+import CartSidebar from './components/Cart/CartSidebar';
 
-//We made this because we need to make the header nad fotter contant ande dynamically chnages the between object
-//For using outlet we have to give a syntax in index
-
-function Layout() {
+export default function Layout() {
+  const location = useLocation();
   return (
     <>
-      <Navbar/>
-      <Outlet />
-      <Footer/>
+      <Navbar />
+      <CartSidebar />
+      <main>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
+      </main>
+      <Footer />
     </>
-  )
+  );
 }
-
-export default Layout
