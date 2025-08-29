@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useCart } from '../Cart/CartContext'; // Adjust path if needed
 
 const featuredProducts = [
-  { id: 1, name: 'Solitaire Bliss', price: 1250, image: 'src/assets/Gold Ring.webp' },
+  { id: 1, name: 'Solitaire Bliss', price: 1250, image: 'https://th.bing.com/th/id/OIP.Yxxc74oZbKCC5UB4vtl94gHaE8?w=276&h=184&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3' },
   { id: 2, name: 'Ethereal Pendant', price: 850, image: 'src/assets/182886edd7215788148725463c66766e.jpg' },
   { id: 3, name: 'Golden Weave', price: 1500, image: 'src/assets/MA-313-2-600x600.jpg' },
   { id: 4, name: 'Diamond Droplets', price: 1975, image: 'src/assets/Diamond Ring.webp' },
