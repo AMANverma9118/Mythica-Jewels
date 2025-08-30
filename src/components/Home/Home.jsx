@@ -22,7 +22,7 @@ const sliderContent = [
         subtitle: "Discover pieces that tell your unique story."
     },
     {
-        videoUrl: "src\assets\mixkit-wedding-rings-in-its-case-5181-hd-ready.mp4",
+        videoUrl: "src/assets/mixkit-wedding-rings-in-its-case-5181-hd-ready.mp4",
         title: "The Art of Brilliance",
         subtitle: "Where timeless design meets flawless craftsmanship."
     }
