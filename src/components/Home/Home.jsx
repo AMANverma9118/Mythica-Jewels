@@ -11,22 +11,23 @@ const featuredProducts = [
 ];
 
 const sliderContent = [
-    {
-        videoUrl: "src/assets/WhatsApp Video 2024-01-31 at 11.47.35_54e880ab.mp4",
-        title: "A Promise of Forever",
-        subtitle: "Crafted to celebrate your most precious moments."
-    },
-    {
-        videoUrl: "src/assets/mixkit-portrait-of-a-happy-bride-in-the-garden-40602-hd-ready.mp4",
-        title: "Elegance Redefined",
-        subtitle: "Discover pieces that tell your unique story."
-    },
-    {
-        videoUrl: "src/assets/mixkit-wedding-rings-in-its-case-5181-hd-ready.mp4",
-        title: "The Art of Brilliance",
-        subtitle: "Where timeless design meets flawless craftsmanship."
-    }
+  {
+    videoUrl: "/videos/WhatsApp-Video.mp4",
+    title: "A Promise of Forever",
+    subtitle: "Crafted to celebrate your most precious moments."
+  },
+  {
+    videoUrl: "/videos/mixkit-portrait.mp4",
+    title: "Elegance Redefined",
+    subtitle: "Discover pieces that tell your unique story."
+  },
+  {
+    videoUrl: "/videos/mixkit-wedding-rings.mp4",
+    title: "The Art of Brilliance",
+    subtitle: "Where timeless design meets flawless craftsmanship."
+  }
 ];
+
 
 const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } };
 const staggerContainer = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.2 } } };
