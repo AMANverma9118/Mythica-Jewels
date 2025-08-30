@@ -25,7 +25,13 @@ export default function Home() {
             {featuredProducts.map((product) => (
               <motion.div key={product.id} variants={fadeUp} className="group relative overflow-hidden rounded-lg shadow-lg text-center bg-gray-50 dark:bg-gray-800">
                 <motion.div whileHover={{ scale: 1.05 }} className="overflow-hidden"><img src={product.image} alt={product.name} className="w-full h-80 object-cover transform group-hover:scale-110 transition-transform duration-500" /></motion.div>
-                <div className="p-6"><h3 className="text-xl font-serif font-semibold text-gray-800 dark:text-white">{product.name}</h3><p className="text-gray-600 dark:text-gray-300 mt-2">${product.price.toLocaleString()}</p><motion.button onClick={() => addToCart(product)} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-full hover:bg-yellow-500 transition-colors duration-300 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0">Add to Cart</motion.button></div>
+                <div className="p-6">
+                  <h3 className="text-xl font-serif font-semibold text-gray-800 dark:text-white">{product.name}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mt-2">${product.price.toLocaleString()}</p>
+                  <motion.button onClick={() => addToCart(product)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="mt-4 bg-indigo-600 text-white font-bold py-2 px-6 rounded-full hover:bg-indigo-700 transition-colors duration-300">
+                    Add to Cart
+                  </motion.button>
+                </div>
               </motion.div>
             ))}
           </motion.div>
