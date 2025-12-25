@@ -27,22 +27,22 @@ export default function Navbar({ onNavigate, currentPage }) {
   return (
     <>
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${navClasses}`}>
-        <div className="container mx-auto flex justify-between items-center px-6 py-4">
+        <div className="container mx-auto flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4">
           {/* Logo */}
           <motion.div 
             onClick={() => onNavigate('home')}
-            className="flex items-center space-x-3 cursor-pointer"
+            className="flex items-center space-x-2 sm:space-x-3 cursor-pointer flex-shrink-0"
             whileHover={{ scale: 1.02 }}
           >
-            <svg className="w-10 h-10 text-amber-600 dark:text-amber-500" viewBox="0 0 100 100" fill="currentColor">
+            <svg className="w-8 h-8 sm:w-10 sm:h-10 text-amber-600 dark:text-amber-500" viewBox="0 0 100 100" fill="currentColor">
               <path d="M50 10 L30 30 L20 30 L20 50 L10 60 L50 90 L90 60 L80 50 L80 30 L70 30 Z" />
               <path d="M50 30 L40 40 L40 50 L50 60 L60 50 L60 40 Z" fill="white" opacity="0.3"/>
             </svg>
             <div className="flex flex-col">
-              <span className="text-2xl font-serif font-bold tracking-wider text-slate-900 dark:text-white">
+              <span className="text-xl sm:text-2xl font-serif font-bold tracking-wider text-slate-900 dark:text-white">
                 MYTHICA
               </span>
-              <span className="text-xs tracking-[0.3em] text-amber-700 dark:text-amber-500 font-light">
+              <span className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-amber-700 dark:text-amber-500 font-light">
                 JEWELS
               </span>
             </div>
@@ -90,13 +90,13 @@ export default function Navbar({ onNavigate, currentPage }) {
           </nav>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
-            {/* Theme Toggle */}
+          <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+            {/* Theme Toggle - Hidden on very small screens */}
             <motion.button 
               onClick={toggleTheme} 
               whileHover={{ scale: 1.1 }} 
               whileTap={{ scale: 0.9 }}
-              className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="hidden xs:block p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               {theme === 'light' ? (
                 <svg className="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,11 +109,11 @@ export default function Navbar({ onNavigate, currentPage }) {
               )}
             </motion.button>
 
-            {/* Search */}
+            {/* Search - Hidden on very small screens */}
             <motion.button 
               onClick={() => setSearchOpen(true)} 
               whileHover={{ scale: 1.1 }} 
-              className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+              className="hidden xs:block p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
             >
               <svg className="w-5 h-5 text-slate-700 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -158,14 +158,21 @@ export default function Navbar({ onNavigate, currentPage }) {
               </button>
             )}
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Always visible on mobile */}
             <button 
-              className="lg:hidden p-2" 
+              className="lg:hidden p-2 -mr-2 flex items-center justify-center" 
               onClick={() => setMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
             >
-              <svg className="w-6 h-6 text-slate-700 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              {isMenuOpen ? (
+                <svg className="w-6 h-6 text-slate-700 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6 text-slate-700 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
@@ -180,19 +187,70 @@ export default function Navbar({ onNavigate, currentPage }) {
               className="lg:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800"
             >
               <div className="container mx-auto px-6 py-4 space-y-4">
-                {['home', 'shop', 'about', 'contact'].map((page) => (
-                  <button 
-                    key={page}
-                    onClick={() => { onNavigate(page); setMenuOpen(false); }} 
-                    className="block w-full text-left text-sm uppercase tracking-wider text-slate-700 dark:text-slate-300 hover:text-amber-700 dark:hover:text-amber-500 transition-colors py-2"
-                  >
-                    {page}
-                  </button>
-                ))}
-                {!user && (
+                {/* Mobile Theme Toggle */}
+                <button 
+                  onClick={toggleTheme}
+                  className="flex items-center justify-between w-full text-left text-sm uppercase tracking-wider text-slate-700 dark:text-slate-300 py-2"
+                >
+                  <span>Theme</span>
+                  {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+                </button>
+
+                {/* Mobile Search */}
+                <button 
+                  onClick={() => { setSearchOpen(true); setMenuOpen(false); }}
+                  className="flex items-center justify-between w-full text-left text-sm uppercase tracking-wider text-slate-700 dark:text-slate-300 py-2"
+                >
+                  <span>Search</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+
+                <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
+                  {['home', 'shop', 'about', 'contact'].map((page) => (
+                    <button 
+                      key={page}
+                      onClick={() => { onNavigate(page); setMenuOpen(false); }} 
+                      className={`block w-full text-left text-sm uppercase tracking-wider py-2 transition-colors ${
+                        currentPage === page 
+                          ? 'text-amber-700 dark:text-amber-500 font-semibold' 
+                          : 'text-slate-700 dark:text-slate-300 hover:text-amber-700 dark:hover:text-amber-500'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  {user?.role === 'admin' && (
+                    <button 
+                      onClick={() => { onNavigate('admin'); setMenuOpen(false); }} 
+                      className={`block w-full text-left text-sm uppercase tracking-wider py-2 transition-colors ${
+                        currentPage === 'admin' 
+                          ? 'text-amber-700 dark:text-amber-500 font-semibold' 
+                          : 'text-slate-700 dark:text-slate-300 hover:text-amber-700 dark:hover:text-amber-500'
+                      }`}
+                    >
+                      Admin
+                    </button>
+                  )}
+                </div>
+
+                {user ? (
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-4 space-y-2">
+                    <div className="text-sm text-slate-700 dark:text-slate-300">
+                      Signed in as <span className="font-semibold">{user.name}</span>
+                    </div>
+                    <button 
+                      onClick={() => { logout(); setMenuOpen(false); }} 
+                      className="block w-full text-left text-sm text-slate-600 dark:text-slate-400 hover:text-amber-700 dark:hover:text-amber-500 transition-colors py-2"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
                   <button 
                     onClick={() => { onNavigate('auth'); setMenuOpen(false); }} 
-                    className="block w-full bg-amber-700 text-white px-6 py-2 rounded-full font-medium text-sm"
+                    className="block w-full bg-amber-700 text-white px-6 py-3 rounded-full font-medium text-sm mt-4"
                   >
                     Sign In
                   </button>
