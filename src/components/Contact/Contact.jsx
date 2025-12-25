@@ -67,8 +67,8 @@ export default function Contact() {
                   <div>
                     <h3 className="font-bold text-lg dark:text-white mb-1">Visit Us</h3>
                     <p className="text-gray-600 dark:text-gray-400">
-                      123 Jewelry Lane<br />
-                      Jaipur, Rajasthan 302001<br />
+                      Laxmin Market<br />
+                      Ballia, UttarPradesh 277001<br />
                       India
                     </p>
                   </div>
@@ -79,7 +79,7 @@ export default function Contact() {
                   <div>
                     <h3 className="font-bold text-lg dark:text-white mb-1">Call Us</h3>
                     <p className="text-gray-600 dark:text-gray-400">
-                      +91 987-654-3210<br />
+                      +91 911-835-9330<br />
                       Mon-Sat: 10AM - 8PM
                     </p>
                   </div>
@@ -90,8 +90,8 @@ export default function Contact() {
                   <div>
                     <h3 className="font-bold text-lg dark:text-white mb-1">Email Us</h3>
                     <p className="text-gray-600 dark:text-gray-400">
-                      contact@mythicajewels.com<br />
-                      support@mythicajewels.com
+                      aman.verma3497924@gmail.com<br />
+                     av3497924@gmail.com
                     </p>
                   </div>
                 </div>

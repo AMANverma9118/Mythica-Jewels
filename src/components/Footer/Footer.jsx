@@ -113,16 +113,16 @@ export default function Footer() {
             <ul className="space-y-4 text-slate-400">
               <li className="flex items-start gap-3 text-sm font-light">
                 <span className="text-amber-600">📍</span>
-                <span>123 Jewelry Lane,<br />Jaipur, Rajasthan</span>
+                <span>Laxmi Market,<br />Ballia, Uttar Pradesh</span>
               </li>
               <li className="flex items-center gap-3 text-sm font-light">
                 <span className="text-amber-600">📞</span>
-                <span>+91 987-654-3210</span>
+                <span>+91 911-835-9330</span>
               </li>
               <li className="flex items-center gap-3 text-sm font-light">
                 <span className="text-amber-600">✉️</span>
-                <a href="mailto:contact@mythicajewels.com" className="hover:text-amber-600 transition-colors">
-                  contact@mythicajewels.com
+                <a href="mailto:aman.verma3497924@gmail.com" className="hover:text-amber-600 transition-colors">
+                  aman.verma3497924@gmail.com
                 </a>
               </li>
             </ul>
