@@ -1,12 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function Footer() {
+export default function Footer({ onNavigate }) {
   const currentYear = new Date().getFullYear();
 
+  const go = (page) => {
+    onNavigate?.(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <footer className="bg-slate-900 dark:bg-black text-white border-t border-slate-800">
-      <div className="container mx-auto px-6 py-16">
+    <footer className="bg-stone-950 dark:bg-black text-white border-t border-stone-800/90">
+      <div className="container mx-auto max-w-7xl px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand Section */}
           <div className="space-y-6">
@@ -14,7 +19,7 @@ export default function Footer() {
               <div className="w-12 h-12 border-2 border-amber-600 flex items-center justify-center">
                 <span className="text-2xl">💎</span>
               </div>
-              <h2 className="text-2xl font-serif font-bold text-amber-600 tracking-wide">
+              <h2 className="text-xl font-serif font-semibold text-amber-500 tracking-[0.08em]">
                 MYTHICA JEWELS
               </h2>
             </div>
@@ -55,27 +60,43 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-serif font-bold mb-6 text-white uppercase tracking-widest">Quick Links</h3>
+            <h3 className="text-[11px] font-medium mb-6 text-stone-300 uppercase tracking-[0.25em]">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-slate-400 hover:text-amber-600 transition-colors text-sm font-light">
+                <button
+                  type="button"
+                  onClick={() => go('home')}
+                  className="text-slate-400 hover:text-amber-600 transition-colors text-sm font-light text-left w-full bg-transparent border-0 p-0 cursor-pointer"
+                >
                   Home
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-amber-600 transition-colors text-sm font-light">
+                <button
+                  type="button"
+                  onClick={() => go('shop')}
+                  className="text-slate-400 hover:text-amber-600 transition-colors text-sm font-light text-left w-full bg-transparent border-0 p-0 cursor-pointer"
+                >
                   Shop
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-amber-600 transition-colors text-sm font-light">
+                <button
+                  type="button"
+                  onClick={() => go('about')}
+                  className="text-slate-400 hover:text-amber-600 transition-colors text-sm font-light text-left w-full bg-transparent border-0 p-0 cursor-pointer"
+                >
                   About Us
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-amber-600 transition-colors text-sm font-light">
+                <button
+                  type="button"
+                  onClick={() => go('contact')}
+                  className="text-slate-400 hover:text-amber-600 transition-colors text-sm font-light text-left w-full bg-transparent border-0 p-0 cursor-pointer"
+                >
                   Contact
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -151,16 +172,16 @@ export default function Footer() {
 
         {/* Trust Badges */}
         <div className="mt-10 flex flex-wrap justify-center gap-6">
-          <div className="border border-slate-800 px-6 py-3 text-xs uppercase tracking-wider font-light">
+          <div className="border border-slate-800 px-6 py-3 text-xs uppercase tracking-wider text-stone-200">
             🔒 Secure Payment
           </div>
-          <div className="border border-slate-800 px-6 py-3 text-xs uppercase tracking-wider font-light">
+          <div className="border border-slate-800 px-6 py-3 text-xs uppercase tracking-wider text-stone-200">
             ✓ Certified Authentic
           </div>
-          <div className="border border-slate-800 px-6 py-3 text-xs uppercase tracking-wider font-light">
+          <div className="border border-slate-800 px-6 py-3 text-xs uppercase tracking-wider text-stone-200">
             🚚 Free Shipping
           </div>
-          <div className="border border-slate-800 px-6 py-3 text-xs uppercase tracking-wider font-light">
+          <div className="border border-slate-800 px-6 py-3 text-xs uppercase tracking-wider text-stone-200">
             ↩️ Easy Returns
           </div>
         </div>

@@ -5,13 +5,13 @@ import { useAuth } from '../Cart/AuthContext';
 
 export default function AdminPanel() {
   const [products, setProducts] = useState([]);
-  const [formData, setFormData] = useState({ 
-    name: '', 
-    description: '', 
-    price: '', 
-    imageUrl: '',  // Changed from 'image' to 'imageUrl'
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    price: '',
+    imageUrl: '',
     category: '',
-    stock: '10'    // Added stock field
+    stock: '10',
   });
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,6 @@ export default function AdminPanel() {
   const fetchProducts = async () => {
     try {
       const data = await apiCall('/admin/products');
-      console.log('Fetched products:', data);
       setProducts(data.products || data || []);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -39,35 +38,31 @@ export default function AdminPanel() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       const productData = {
         name: formData.name,
         description: formData.description,
         price: parseFloat(formData.price),
-        imageUrl: formData.imageUrl,  // Backend expects 'imageUrl'
+        imageUrl: formData.imageUrl,
         category: formData.category,
-        stock: parseInt(formData.stock) || 10
+        stock: parseInt(formData.stock, 10) || 10,
       };
 
-      console.log('Submitting product:', productData);
-
       if (editingId) {
-        const response = await apiCall(`/admin/products/${editingId}`, {
+        await apiCall(`/admin/products/${editingId}`, {
           method: 'PUT',
           body: JSON.stringify(productData),
         });
-        console.log('Update response:', response);
         alert('Product updated successfully!');
       } else {
-        const response = await apiCall('/admin/products', {
+        await apiCall('/admin/products', {
           method: 'POST',
           body: JSON.stringify(productData),
         });
-        console.log('Create response:', response);
         alert('Product added successfully!');
       }
-      
+
       setFormData({ name: '', description: '', price: '', imageUrl: '', category: '', stock: '10' });
       setEditingId(null);
       fetchProducts();
@@ -81,7 +76,7 @@ export default function AdminPanel() {
 
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
-    
+
     try {
       await apiCall(`/admin/products/${id}`, { method: 'DELETE' });
       alert('Product deleted successfully!');
@@ -97,9 +92,9 @@ export default function AdminPanel() {
       name: product.name,
       description: product.description,
       price: product.price.toString(),
-      imageUrl: product.imageUrl || product.image || '',  // Handle both field names
+      imageUrl: product.imageUrl || product.image || '',
       category: product.category || '',
-      stock: product.stock?.toString() || '10'
+      stock: product.stock?.toString() || '10',
     });
     setEditingId(product._id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -107,230 +102,244 @@ export default function AdminPanel() {
 
   if (user?.role !== 'admin') {
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-red-600 mb-4">Access Denied</h1>
-          <p className="text-gray-600 dark:text-gray-400">This page is for administrators only.</p>
+      <div className="mj-page min-h-screen pt-24 flex items-center justify-center px-6">
+        <div className="mj-panel max-w-md w-full p-10 text-center">
+          <h1 className="text-2xl mj-section-title mb-3 text-red-800 dark:text-red-400">Access denied</h1>
+          <p className="mj-body-muted text-sm">
+            This page is for administrators only.
+          </p>
         </div>
       </div>
     );
   }
 
+  const labelClass = 'block text-[11px] font-semibold uppercase tracking-[0.15em] text-stone-800 dark:text-stone-400 mb-2';
+
   return (
-    <div className="min-h-screen pt-24 pb-16 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-6">
-        <motion.h1 
-          initial={{ opacity: 0, y: -20 }}
+    <div className="mj-page min-h-screen pt-24 pb-16">
+      <div className="container mx-auto max-w-7xl px-6">
+        <motion.div
+          initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-5xl font-bold mb-12 text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
+          className="text-center mb-12 md:mb-14"
         >
-          Admin Dashboard
-        </motion.h1>
-        
+          <p className="mj-eyebrow mb-3">Operations</p>
+          <h1 className="text-4xl md:text-5xl mj-section-title">Admin dashboard</h1>
+          <p className="mt-3 mj-body-muted text-sm max-w-lg mx-auto">
+            Manage catalogue, pricing, and inventory — same look as the rest of Mythica Jewels.
+          </p>
+        </motion.div>
+
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Product Form */}
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-1"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sticky top-24">
-              <h2 className="text-2xl font-bold mb-6 dark:text-white flex items-center gap-2">
-                {editingId ? '✏️ Edit Product' : '➕ Add Product'}
+            <div className="mj-panel sticky top-24 max-h-[calc(100vh-7rem)] flex flex-col overflow-hidden p-6">
+              <h2 className="text-xl mj-section-title mb-1 shrink-0 flex items-center gap-2">
+                {editingId ? '✏️ Edit product' : '➕ Add product'}
               </h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Product Name *
-                  </label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g., Diamond Ring" 
-                    value={formData.name} 
-                    onChange={(e) => setFormData({...formData, name: e.target.value})} 
-                    className="w-full p-3 border-2 rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:border-purple-600 outline-none transition-colors" 
-                    required 
-                  />
-                </div>
+              <p className="text-xs text-stone-700 dark:text-stone-500 mb-5 shrink-0">
+                {editingId ? 'Update details below, then save.' : 'Fill in all fields to list a new piece.'}
+              </p>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Description *
-                  </label>
-                  <textarea 
-                    placeholder="Product description..." 
-                    value={formData.description} 
-                    onChange={(e) => setFormData({...formData, description: e.target.value})} 
-                    className="w-full p-3 border-2 rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:border-purple-600 outline-none transition-colors" 
-                    rows="3" 
-                    required 
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Price ($) *
-                  </label>
-                  <input 
-                    type="number" 
-                    placeholder="999.99" 
-                    value={formData.price} 
-                    onChange={(e) => setFormData({...formData, price: e.target.value})} 
-                    className="w-full p-3 border-2 rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:border-purple-600 outline-none transition-colors" 
-                    step="0.01"
-                    min="0"
-                    required 
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Stock Quantity *
-                  </label>
-                  <input 
-                    type="number" 
-                    placeholder="10" 
-                    value={formData.stock} 
-                    onChange={(e) => setFormData({...formData, stock: e.target.value})} 
-                    className="w-full p-3 border-2 rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:border-purple-600 outline-none transition-colors" 
-                    min="0"
-                    required 
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Image URL *
-                  </label>
-                  <input 
-                    type="url" 
-                    placeholder="https://example.com/image.jpg" 
-                    value={formData.imageUrl} 
-                    onChange={(e) => setFormData({...formData, imageUrl: e.target.value})} 
-                    className="w-full p-3 border-2 rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:border-purple-600 outline-none transition-colors" 
-                    required 
-                  />
-                  {formData.imageUrl && (
-                    <img 
-                      src={formData.imageUrl} 
-                      alt="Preview" 
-                      className="mt-2 w-full h-32 object-cover rounded-lg" 
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        console.error('Invalid image URL');
-                      }} 
+              <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+                <div className="space-y-4 overflow-y-auto overscroll-contain flex-1 min-h-0 pr-1 -mr-1">
+                  <div>
+                    <label className={labelClass}>Product name *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Diamond ring"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="mj-input py-3"
+                      required
                     />
-                  )}
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>Description *</label>
+                    <textarea
+                      placeholder="Product description…"
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      className="mj-input py-3 min-h-[100px] resize-y"
+                      rows="3"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>Price (₹) *</label>
+                    <input
+                      type="number"
+                      placeholder="999.99"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      className="mj-input py-3"
+                      step="0.01"
+                      min="0"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>Stock quantity *</label>
+                    <input
+                      type="number"
+                      placeholder="10"
+                      value={formData.stock}
+                      onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                      className="mj-input py-3"
+                      min="0"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>Image URL *</label>
+                    <input
+                      type="url"
+                      placeholder="https://example.com/image.jpg"
+                      value={formData.imageUrl}
+                      onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                      className="mj-input py-3"
+                      required
+                    />
+                    {formData.imageUrl ? (
+                      <img
+                        src={formData.imageUrl}
+                        alt="Preview"
+                        className="mt-2 w-full h-32 object-cover rounded-lg ring-1 ring-stone-200 dark:ring-slate-700"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : null}
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>Category *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Ring, Necklace"
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      className="mj-input py-3"
+                      required
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Category *
-                  </label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g., Rings, Necklaces, Earrings" 
-                    value={formData.category} 
-                    onChange={(e) => setFormData({...formData, category: e.target.value})} 
-                    className="w-full p-3 border-2 rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:border-purple-600 outline-none transition-colors"
-                    required 
-                  />
-                </div>
-
-                <div className="flex gap-2 pt-2">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    disabled={loading}
-                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  >
-                    {loading ? 'Saving...' : (editingId ? 'Update Product' : 'Add Product')}
-                  </motion.button>
-                  {editingId && (
-                    <button 
-                      type="button" 
-                      onClick={() => {
-                        setEditingId(null); 
-                        setFormData({ name: '', description: '', price: '', imageUrl: '', category: '', stock: '10' });
-                      }} 
-                      className="px-6 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-bold transition-colors"
+                <div className="shrink-0 pt-4 mt-2 border-t border-stone-200 dark:border-slate-700 bg-mj-surface dark:bg-slate-900">
+                  <div className="flex flex-col gap-2 sm:flex-row">
+                    <motion.button
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                      type="submit"
+                      disabled={loading}
+                      className="w-full sm:flex-1 mj-btn-primary py-3.5 rounded-lg text-[11px] uppercase justify-center disabled:opacity-50"
                     >
-                      Cancel
-                    </button>
-                  )}
+                      {loading ? 'Saving…' : editingId ? 'Update product' : 'Add product'}
+                    </motion.button>
+                    {editingId ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingId(null);
+                          setFormData({ name: '', description: '', price: '', imageUrl: '', category: '', stock: '10' });
+                        }}
+                        className="w-full sm:w-auto sm:shrink-0 px-6 py-3.5 rounded-lg text-[11px] uppercase tracking-[0.15em] font-medium bg-stone-200 text-stone-800 hover:bg-stone-300 dark:bg-slate-800 dark:text-stone-200 dark:hover:bg-slate-700 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
               </form>
             </div>
           </motion.div>
 
-          {/* Products List */}
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }}
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-              <h2 className="text-2xl font-bold mb-6 dark:text-white flex items-center justify-between">
-                <span>📦 Product Inventory</span>
-                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  {products.length} products
+            <div className="mj-panel p-6 md:p-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <h2 className="text-xl mj-section-title flex items-center gap-2">
+                  <span>📦</span> Product inventory
+                </h2>
+                <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-stone-800 dark:text-stone-400">
+                  {products.length} {products.length === 1 ? 'product' : 'products'}
                 </span>
-              </h2>
-              
-              <div className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto">
+              </div>
+
+              <div className="space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto pr-1">
                 {products.length === 0 ? (
-                  <div className="text-center py-12">
-                    <p className="text-gray-500 dark:text-gray-400 text-lg">No products yet. Add your first product!</p>
+                  <div className="text-center py-14 rounded-lg bg-stone-50 dark:bg-slate-800/50 ring-1 ring-stone-200/80 dark:ring-slate-700">
+                    <p className="mj-body-muted text-sm">
+                      No products yet. Add your first product using the form.
+                    </p>
                   </div>
                 ) : (
                   products.map((product, index) => (
                     <motion.div
                       key={product._id}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="flex items-center gap-4 p-4 border-2 dark:border-gray-700 rounded-xl hover:shadow-lg hover:border-purple-400 dark:hover:border-purple-600 transition-all"
+                      transition={{ delay: index * 0.04 }}
+                      className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-lg ring-1 ring-stone-200/90 dark:ring-slate-700 bg-mj-surface/50 dark:bg-slate-900/40 hover:ring-amber-800/25 dark:hover:ring-amber-600/30 transition-all"
                     >
-                      <img 
-                        src={product.imageUrl || product.image} 
-                        alt={product.name} 
-                        className="w-24 h-24 object-cover rounded-lg shadow-md" 
-                        onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=100&h=100&fit=crop'}
+                      <img
+                        src={product.imageUrl || product.image}
+                        alt={product.name}
+                        className="w-full sm:w-24 h-48 sm:h-24 object-cover rounded-md ring-1 ring-stone-200 dark:ring-slate-700 shrink-0"
+                        onError={(e) => {
+                          e.target.src =
+                            'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=100&h=100&fit=crop';
+                        }}
                       />
-                      <div className="flex-grow">
-                        <h3 className="font-bold text-lg dark:text-white">{product.name}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1 mb-1">{product.description}</p>
-                        <div className="flex items-center gap-3">
-                          <span className="font-bold text-purple-600 dark:text-amber-400 text-lg">
-                            ${product.price?.toLocaleString()}
+                      <div className="flex-grow min-w-0">
+                        <h3 className="font-serif font-semibold text-lg text-stone-900 dark:text-white truncate">
+                          {product.name}
+                        </h3>
+                        <p className="text-sm text-stone-700 dark:text-stone-400 line-clamp-2 mt-1">
+                          {product.description}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2 mt-3">
+                          <span className="font-semibold text-amber-900 dark:text-amber-400">
+                            ₹{product.price?.toLocaleString('en-IN')}
                           </span>
-                          {product.category && (
-                            <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs rounded-full">
+                          {product.category ? (
+                            <span className="px-2.5 py-0.5 bg-stone-200/90 dark:bg-slate-800 text-stone-800 dark:text-stone-300 text-[10px] uppercase tracking-wider rounded-full">
                               {product.category}
                             </span>
-                          )}
-                          <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded-full">
-                            Stock: {product.stock || 0}
+                          ) : null}
+                          <span className="px-2.5 py-0.5 bg-emerald-100/90 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-400 text-[10px] uppercase tracking-wider rounded-full">
+                            Stock {product.stock ?? 0}
                           </span>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <motion.button 
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleEdit(product)} 
-                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+                      <div className="flex sm:flex-col gap-2 shrink-0">
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          type="button"
+                          onClick={() => handleEdit(product)}
+                          className="flex-1 sm:flex-none px-4 py-2.5 mj-btn-primary rounded-lg text-[11px] uppercase justify-center"
                         >
-                          ✏️ Edit
+                          Edit
                         </motion.button>
-                        <motion.button 
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleDelete(product._id)} 
-                          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors"
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          type="button"
+                          onClick={() => handleDelete(product._id)}
+                          className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg text-[11px] uppercase font-medium bg-red-700 hover:bg-red-800 text-white transition-colors"
                         >
-                          🗑️ Delete
+                          Delete
                         </motion.button>
                       </div>
                     </motion.div>

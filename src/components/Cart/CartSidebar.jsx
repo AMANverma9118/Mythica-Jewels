@@ -92,13 +92,13 @@ export default function CartSidebar() {
             className="fixed top-0 right-0 h-full w-full max-w-md bg-white dark:bg-slate-900 z-[99] shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-slate-200 dark:border-slate-800">
-              <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white tracking-wide">
+            <div className="flex justify-between items-center p-6 border-b border-stone-200 dark:border-slate-800">
+              <h2 className="text-2xl font-serif font-bold text-stone-950 dark:text-white tracking-wide">
                 {checkoutMode ? 'CHECKOUT' : `YOUR CART ${cartItems.length > 0 ? `(${cartItems.length})` : ''}`}
               </h2>
               <button 
                 onClick={toggleCart} 
-                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                className="text-stone-500 hover:text-stone-950 dark:hover:text-white transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -113,18 +113,18 @@ export default function CartSidebar() {
                   <div className="flex-grow flex items-center justify-center">
                     <div className="text-center">
                       <div className="w-12 h-12 border-4 border-amber-700 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                      <p className="text-slate-600 dark:text-slate-400">Loading cart...</p>
+                      <p className="text-stone-800 dark:text-slate-400 font-medium">Loading cart...</p>
                     </div>
                   </div>
                 ) : !user ? (
                   /* Not Logged In */
                   <div className="flex-grow flex items-center justify-center p-6">
                     <div className="text-center">
-                      <svg className="w-20 h-20 mx-auto text-slate-300 dark:text-slate-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-20 h-20 mx-auto text-stone-400 dark:text-slate-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
-                      <p className="text-slate-600 dark:text-slate-400 text-lg font-light mb-2">Please sign in</p>
-                      <p className="text-slate-500 dark:text-slate-500 text-sm">Sign in to view your cart and checkout</p>
+                      <p className="text-stone-900 dark:text-slate-300 text-lg font-medium mb-2">Please sign in</p>
+                      <p className="text-stone-700 dark:text-slate-500 text-sm">Sign in to view your cart and checkout</p>
                     </div>
                   </div>
                 ) : (
@@ -159,7 +159,7 @@ export default function CartSidebar() {
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, x: -100 }}
-                              className="flex items-center space-x-4 pb-4 border-b border-slate-200 dark:border-slate-800"
+                              className="flex items-center space-x-4 pb-4 border-b border-stone-200 dark:border-slate-800"
                             >
                               <img 
                                 src={image} 
@@ -171,14 +171,14 @@ export default function CartSidebar() {
                                 }}
                               />
                               <div className="flex-grow">
-                                <h3 className="font-serif font-semibold text-slate-900 dark:text-white">
+                                <h3 className="font-serif font-semibold text-stone-950 dark:text-white">
                                   {name}
                                 </h3>
-                                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                <p className="text-sm text-stone-700 dark:text-slate-400 mt-1">
                                   Quantity: {quantity}
                                 </p>
                                 <p className="text-amber-700 dark:text-amber-500 font-medium mt-1">
-                                  ${(price * quantity).toLocaleString()} 
+                                  ₹{(price * quantity).toLocaleString('en-IN')} 
                                   {price === 0 && <span className="text-xs text-red-500 ml-2">(Price not available)</span>}
                                 </p>
                               </div>
@@ -187,7 +187,7 @@ export default function CartSidebar() {
                                   console.log('Removing item:', productId);
                                   removeFromCart(productId);
                                 }} 
-                                className="text-slate-400 hover:text-red-600 transition-colors p-2"
+                                className="text-stone-500 hover:text-red-600 dark:text-slate-400 transition-colors p-2"
                                 title="Remove from cart"
                               >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,21 +199,21 @@ export default function CartSidebar() {
                         })
                       ) : (
                         <div className="text-center py-20">
-                          <svg className="w-20 h-20 mx-auto text-slate-300 dark:text-slate-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-20 h-20 mx-auto text-stone-400 dark:text-slate-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                           </svg>
-                          <p className="text-slate-500 dark:text-slate-400 text-lg font-light">Your cart is empty</p>
-                          <p className="text-slate-400 dark:text-slate-600 text-sm mt-2">Add some beautiful jewelry to get started</p>
+                          <p className="text-stone-900 dark:text-slate-300 text-lg font-medium">Your cart is empty</p>
+                          <p className="text-stone-700 dark:text-slate-500 text-sm mt-2">Add some beautiful jewelry to get started</p>
                         </div>
                       )}
                     </div>
 
                     {/* Cart Footer */}
                     {cartItems.length > 0 && (
-                      <div className="p-6 border-t border-slate-200 dark:border-slate-800 space-y-4 bg-slate-50 dark:bg-slate-800">
-                        <div className="flex justify-between text-lg font-serif font-bold text-slate-900 dark:text-white">
+                      <div className="p-6 border-t border-stone-200 dark:border-slate-800 space-y-4 bg-stone-50 dark:bg-slate-800">
+                        <div className="flex justify-between text-lg font-serif font-bold text-stone-950 dark:text-white">
                           <span>SUBTOTAL</span>
-                          <span className="text-amber-700 dark:text-amber-500">${subtotal.toLocaleString()}</span>
+                          <span className="text-amber-700 dark:text-amber-500">₹{subtotal.toLocaleString('en-IN')}</span>
                         </div>
                         <motion.button 
                           whileHover={{ scale: 1.02 }}
@@ -231,7 +231,7 @@ export default function CartSidebar() {
             ) : (
               /* Checkout Form */
               <div className="flex-grow overflow-y-auto p-6">
-                <h3 className="text-xl font-serif font-bold mb-6 text-slate-900 dark:text-white tracking-wide">
+                <h3 className="text-xl font-serif font-bold mb-6 text-stone-950 dark:text-white tracking-wide">
                   SHIPPING ADDRESS
                 </h3>
                 <div className="space-y-4">
@@ -279,7 +279,7 @@ export default function CartSidebar() {
                   />
                   
                   <div className="pt-6 space-y-3">
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 uppercase tracking-wider">
+                    <p className="text-sm text-stone-800 dark:text-slate-400 mb-4 uppercase tracking-wider font-medium">
                       Select Payment Method:
                     </p>
                     <motion.button 
@@ -320,7 +320,7 @@ export default function CartSidebar() {
                     </motion.button>
                     <button 
                       onClick={() => setCheckoutMode(null)} 
-                      className="w-full text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white py-2 uppercase tracking-wider text-sm transition-colors"
+                      className="w-full text-stone-800 dark:text-slate-400 hover:text-stone-950 dark:hover:text-white py-2 uppercase tracking-wider text-sm font-medium transition-colors"
                       disabled={loading}
                     >
                       ← Back to Cart
@@ -328,7 +328,7 @@ export default function CartSidebar() {
                   </div>
 
                   {/* reCAPTCHA Notice */}
-                  <div className="pt-4 text-xs text-center text-slate-500 dark:text-slate-400">
+                  <div className="pt-4 text-xs text-center text-stone-700 dark:text-slate-400">
                     <p>Protected by reCAPTCHA</p>
                     <p className="mt-1">
                       <a href="https://policies.google.com/privacy" className="hover:underline" target="_blank" rel="noopener noreferrer">

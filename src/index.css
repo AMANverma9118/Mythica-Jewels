@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+/* Manual theme toggle (ThemeContext) — default v4 dark: uses OS preference only */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@import "./styles/mythica-tokens.css";
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 5.75rem;
+  }
+
+  body {
+    @apply font-sans antialiased bg-mj-canvas text-stone-950;
+  }
+
+  .dark body {
+    @apply bg-slate-950 text-slate-100;
+  }
+
+  ::selection {
+    background-color: rgb(253 230 138 / 0.55);
+    color: rgb(15 23 42);
+  }
+
+  .dark ::selection {
+    background-color: rgb(180 83 9 / 0.45);
+    color: rgb(255 255 255);
+  }
+}

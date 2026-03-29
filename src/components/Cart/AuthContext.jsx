@@ -6,6 +6,7 @@ import React, {
 } from "react";
 
 const API_BASE_URL = "https://mythica-jewels-backend.onrender.com/api";
+// const API_BASE_URL = "http://localhost:8000/api";
 const RECAPTCHA_SITE_KEY = "6LfEdzUsAAAAADYLbog-_DVd_Clpu7mj3Lldy9oq";
 
 /* ---------------------- API HELPER ---------------------- */
