@@ -4,7 +4,7 @@ import { useAuth, apiCall } from '../Cart/AuthContext';
 import { useCart } from '../Cart/CartContext';
 import { useTheme } from '../Cart/ThemeContext';
 
-export default function Navbar({ onNavigate, currentPage, onSearchSelect }) {
+export default function Navbar({ onNavigate, currentPage, onSearchSelect, onViewProduct }) {
   const [isSticky, setSticky] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -59,16 +59,21 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect }) {
   }, [searchCatalog, searchInput]);
 
   const handlePickProduct = (product) => {
+    if (onViewProduct && product?._id) {
+      onViewProduct(product._id);
+      setSearchOpen(false);
+      return;
+    }
     const q = searchInput.trim() || product.name || '';
     onSearchSelect?.(q);
     setSearchOpen(false);
   };
 
   const navClasses = isSticky 
-    ? 'bg-stone-50/95 dark:bg-slate-950/95 backdrop-blur-md shadow-sm border-b border-stone-200/80 dark:border-slate-800' 
+    ? 'bg-stone-50/95 dark:bg-neutral-950/95 backdrop-blur-md shadow-sm border-b border-stone-200/80 dark:border-stone-800' 
     : currentPage === 'home'
       ? 'bg-transparent backdrop-blur-[2px]'
-      : 'bg-stone-50/98 dark:bg-slate-950 border-b border-stone-200/70 dark:border-slate-800';
+      : 'bg-stone-50/98 dark:bg-neutral-950 border-b border-stone-200/70 dark:border-stone-800';
 
   const onHero = currentPage === 'home' && !isSticky;
 
@@ -80,11 +85,11 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect }) {
         : 'text-white/88 hover:text-white';
     }
     return active
-      ? 'text-amber-900 dark:text-amber-400 font-semibold'
-      : 'text-stone-950 dark:text-stone-200 hover:text-amber-900 dark:hover:text-amber-400';
+      ? 'text-stone-900 dark:text-stone-100 font-medium'
+      : 'text-stone-700 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200';
   };
 
-  const indicatorClass = onHero ? 'bg-amber-300' : 'bg-amber-800 dark:bg-amber-500';
+  const indicatorClass = onHero ? 'bg-amber-200/90' : 'bg-stone-800 dark:bg-stone-400';
 
   return (
     <>

@@ -4,7 +4,7 @@ import { useAuth } from '../Cart/AuthContext';
 import { useCart } from '../Cart/CartContext';
 import { apiCall } from '../Cart/AuthContext';
 
-export default function Home({ onNavigate }) {
+export default function Home({ onNavigate, onViewProduct }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const { user } = useAuth();
@@ -256,7 +256,16 @@ export default function Home({ onNavigate }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ delay: index * 0.06, duration: 0.5 }}
-                className="group flex flex-col h-full rounded-2xl overflow-hidden bg-white dark:bg-slate-900 ring-1 ring-stone-300/90 dark:ring-slate-700 shadow-[0_12px_40px_-12px_rgba(28,25,23,0.18)] dark:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_-12px_rgba(28,25,23,0.22)] hover:-translate-y-1 transition-all duration-300"
+                role="button"
+                tabIndex={0}
+                onClick={() => onViewProduct?.(product._id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onViewProduct?.(product._id);
+                  }
+                }}
+                className="group flex flex-col h-full rounded-2xl overflow-hidden bg-white dark:bg-slate-900 ring-1 ring-stone-300/90 dark:ring-slate-700 shadow-[0_12px_40px_-12px_rgba(28,25,23,0.18)] dark:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_-12px_rgba(28,25,23,0.22)] hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               >
                 <div className="relative aspect-[4/5] shrink-0 overflow-hidden bg-[#e5e0d8] dark:bg-slate-800">
                   <img
@@ -282,7 +291,10 @@ export default function Home({ onNavigate }) {
                     <motion.button
                       type="button"
                       initial={false}
-                      onClick={() => addToCart(product._id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product._id);
+                      }}
                       className="absolute bottom-[5.5rem] left-4 right-4 z-20 py-3 mj-btn-primary text-[11px] uppercase rounded-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-lg"
                     >
                       Add to cart
@@ -304,10 +316,13 @@ export default function Home({ onNavigate }) {
                     </p>
                     <button
                       type="button"
-                      onClick={() => onNavigate('shop')}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onViewProduct?.(product._id);
+                      }}
                       className="text-[11px] uppercase tracking-[0.2em] font-semibold text-stone-900 dark:text-white border-b-2 border-amber-800 dark:border-amber-500 pb-0.5 hover:text-amber-900 dark:hover:text-amber-400 transition-colors"
                     >
-                      View in collection
+                      View details
                     </button>
                   </div>
                 </div>

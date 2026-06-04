@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../Cart/AuthContext';
 import { useCart } from '../Cart/CartContext';
 import { apiCall } from '../Cart/AuthContext';
+import ProductImageFrame from '../ui/ProductImageFrame';
 
 function productMatchesSearch(product, rawQuery) {
   const q = (rawQuery || '').trim().toLowerCase();
@@ -13,7 +15,7 @@ function productMatchesSearch(product, rawQuery) {
   return name.includes(q) || desc.includes(q) || cat.includes(q);
 }
 
-export default function ShopPage({ onNavigate, textSearchFilter = '', onClearTextSearch }) {
+export default function ShopPage({ onNavigate, onViewProduct, textSearchFilter = '', onClearTextSearch }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -56,7 +58,7 @@ export default function ShopPage({ onNavigate, textSearchFilter = '', onClearTex
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-mj-canvas dark:bg-slate-950 pt-20">
+      <div className="min-h-screen flex items-center justify-center bg-mj-canvas dark:bg-neutral-950 pt-20">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-14 w-14 border-2 border-amber-800/30 border-t-amber-800 dark:border-amber-600/30 dark:border-t-amber-500"></div>
           <p className="mt-5 text-stone-800 dark:text-stone-400 text-[11px] uppercase tracking-[0.28em] font-medium">Loading collection</p>
@@ -66,7 +68,7 @@ export default function ShopPage({ onNavigate, textSearchFilter = '', onClearTex
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-20 bg-mj-canvas dark:bg-slate-950">
+    <div className="min-h-screen pt-24 pb-20 bg-mj-canvas dark:bg-neutral-950">
       <div className="container mx-auto max-w-7xl px-6">
         {/* Breadcrumb + header */}
         <motion.div 
@@ -74,18 +76,12 @@ export default function ShopPage({ onNavigate, textSearchFilter = '', onClearTex
           animate={{ opacity: 1, y: 0 }} 
           className="mb-10 md:mb-14"
         >
-          <nav className="text-[11px] uppercase tracking-[0.2em] text-stone-700 dark:text-stone-500 mb-6 font-medium">
-            {onNavigate ? (
-              <>
-                <button type="button" onClick={() => onNavigate('home')} className="hover:text-amber-900 dark:hover:text-amber-400 transition-colors">
-                  Home
-                </button>
-                <span className="mx-2 text-stone-500 dark:text-stone-600">/</span>
-                <span className="text-stone-800 dark:text-stone-300">Collection</span>
-              </>
-            ) : (
-              <span className="text-stone-800 dark:text-stone-300">Collection</span>
-            )}
+          <nav className="text-[11px] uppercase tracking-[0.2em] text-stone-600 dark:text-stone-500 mb-6 font-medium">
+            <Link to="/" className="hover:text-stone-900 dark:hover:text-stone-200 transition-colors">
+              Home
+            </Link>
+            <span className="mx-2 text-stone-400 dark:text-stone-600">/</span>
+            <span className="text-stone-800 dark:text-stone-300">Collection</span>
           </nav>
           <p className="text-[11px] uppercase tracking-[0.3em] text-amber-900 dark:text-amber-500 mb-3 font-semibold">All jewelry</p>
           <h1 className="text-4xl md:text-5xl font-serif font-semibold text-stone-900 dark:text-white tracking-tight mb-3">
@@ -124,7 +120,7 @@ export default function ShopPage({ onNavigate, textSearchFilter = '', onClearTex
         ) : null}
 
         {/* Filters & sort — toolbar */}
-        <div className="sticky top-[4.5rem] z-30 -mx-1 px-1 py-3 mb-10 bg-mj-canvas/95 dark:bg-slate-950/95 backdrop-blur-md border-y border-stone-200/90 dark:border-slate-800">
+        <div className="sticky top-[4.5rem] z-30 -mx-1 px-1 py-3 mb-10 bg-mj-canvas/95 dark:bg-neutral-950/95 backdrop-blur-md border-y border-stone-200/90 dark:border-stone-800">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
             <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
             {categories.map(cat => (
@@ -163,51 +159,65 @@ export default function ShopPage({ onNavigate, textSearchFilter = '', onClearTex
         {/* Products grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 items-stretch">
           {sortedProducts.map((product, index) => (
-            <motion.div
+            <motion.article
               key={product._id}
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.04, duration: 0.45 }}
-              className="group relative bg-white dark:bg-slate-900 overflow-hidden h-full flex flex-col rounded-lg ring-1 ring-stone-200/90 dark:ring-slate-800 shadow-sm hover:shadow-xl hover:ring-stone-300/80 dark:hover:ring-slate-600 transition-all duration-500"
+              role="button"
+              tabIndex={0}
+              onClick={() => onViewProduct?.(product._id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onViewProduct?.(product._id);
+                }
+              }}
+              className="group relative bg-white dark:bg-neutral-900 overflow-hidden h-full flex flex-col rounded-sm ring-1 ring-stone-200/90 dark:ring-stone-800 shadow-sm hover:shadow-lg hover:ring-stone-400/60 dark:hover:ring-stone-600 transition-all duration-300 cursor-pointer"
             >
-              <div className="relative aspect-[3/4] max-h-[28rem] shrink-0 overflow-hidden bg-stone-100 dark:bg-slate-800">
-                <img 
-                  src={product.imageUrl || product.image || 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=600&fit=crop'} 
+              <div className="relative shrink-0">
+                <ProductImageFrame
+                  src={product.imageUrl || product.image || 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=600&fit=crop'}
                   alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  size="small"
+                  className="rounded-none ring-0 group-hover:opacity-95 transition-opacity"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
-                {product.category && (
-                  <div className="absolute top-3 left-3 bg-white/95 dark:bg-slate-950/90 backdrop-blur-sm px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium text-stone-800 dark:text-stone-100 ring-1 ring-stone-200/80 dark:ring-slate-700">
+                {product.category ? (
+                  <div className="absolute top-3 left-3 z-10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium text-stone-800 dark:text-stone-200 bg-white/95 dark:bg-neutral-950/90 ring-1 ring-stone-200/80 dark:ring-stone-700 pointer-events-none">
                     {product.category}
                   </div>
-                )}
-
-                {user && (
-                  <motion.button
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    className="absolute bottom-4 left-4 right-4 bg-stone-900 text-white py-3 text-[11px] uppercase tracking-[0.18em] font-medium opacity-0 group-hover:opacity-100 transition-opacity hover:bg-amber-800"
-                    onClick={() => addToCart(product._id)}
-                  >
-                    Add to Cart
-                  </motion.button>
-                )}
+                ) : null}
+                <span className="absolute bottom-3 left-3 right-3 z-10 py-2.5 text-center text-[10px] uppercase tracking-[0.2em] font-medium text-white bg-stone-900/90 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  View details
+                </span>
               </div>
               
               <div className="p-5 md:p-6 text-center flex flex-col flex-grow min-h-0">
-                <h3 className="text-base font-serif font-medium text-stone-900 dark:text-white mb-2 tracking-wide line-clamp-2">
+                <h3 className="text-base font-serif font-medium text-stone-900 dark:text-stone-100 mb-2 tracking-wide line-clamp-2 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-colors">
                   {product.name}
                 </h3>
                 <p className="text-stone-700 dark:text-stone-400 text-sm mb-3 line-clamp-2 leading-relaxed">
                   {product.description}
                 </p>
-                <p className="text-amber-900 dark:text-amber-400 text-lg font-semibold mt-auto tracking-wide">
-                  ₹{product.price?.toLocaleString('en-IN')}
-                </p>
+                <div className="mt-auto flex flex-col items-center gap-3">
+                  <p className="text-stone-900 dark:text-stone-200 text-lg font-medium tracking-wide tabular-nums">
+                    ₹{product.price?.toLocaleString('en-IN')}
+                  </p>
+                  {user ? (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product._id);
+                      }}
+                      className="w-full py-2.5 text-[10px] uppercase tracking-[0.18em] font-medium rounded-sm ring-1 ring-stone-300 dark:ring-stone-600 text-stone-900 dark:text-stone-100 hover:bg-stone-900 hover:text-white dark:hover:bg-stone-100 dark:hover:text-stone-900 transition-colors"
+                    >
+                      Quick add
+                    </button>
+                  ) : null}
+                </div>
               </div>
-            </motion.div>
+            </motion.article>
           ))}
         </div>
 
