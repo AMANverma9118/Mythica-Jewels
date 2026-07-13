@@ -23,14 +23,24 @@ const apiCall = async (endpoint, options = {}) => {
     headers,
   });
 
-  let data;
+  let data = null;
   try {
     data = await response.json();
   } catch {
-    throw new Error("Invalid server response");
+    if (response.status === 413) {
+      throw new Error(
+        "Images are too large. Use fewer photos or smaller files (under 2MB each)."
+      );
+    }
+    throw new Error(`Invalid server response (${response.status})`);
   }
 
   if (!response.ok) {
+    if (response.status === 413) {
+      throw new Error(
+        "Images are too large. Use fewer photos or smaller files (under 2MB each)."
+      );
+    }
     throw new Error(data?.message || "Something went wrong");
   }
 

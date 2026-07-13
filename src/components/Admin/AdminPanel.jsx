@@ -113,6 +113,17 @@ export default function AdminPanel() {
       return;
     }
 
+    const images = sortImagesWithUploadsFirst(
+      formData.images.filter((url, i, arr) => arr.indexOf(url) === i)
+    );
+    const imagePayloadSize = images.reduce((sum, url) => sum + (url?.length || 0), 0);
+    if (imagePayloadSize > 14 * 1024 * 1024) {
+      alert(
+        'Images are too large to save. Use fewer photos or smaller files (under 2MB each).'
+      );
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -122,11 +133,9 @@ export default function AdminPanel() {
         price: parseFloat(formData.price),
         category: formData.category,
         stock: parseInt(formData.stock, 10) || 10,
-        images: sortImagesWithUploadsFirst(
-          formData.images.filter((url, i, arr) => arr.indexOf(url) === i)
-        ),
-        imageUrl: sortImagesWithUploadsFirst(formData.images)[0],
-        image: sortImagesWithUploadsFirst(formData.images)[0],
+        images,
+        imageUrl: images[0],
+        image: images[0],
       };
 
       if (editingId) {
