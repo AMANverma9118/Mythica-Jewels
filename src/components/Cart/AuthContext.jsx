@@ -4,9 +4,8 @@ import React, {
   createContext,
   useContext,
 } from "react";
+import { API_BASE_URL } from "../../config/api";
 
-const API_BASE_URL = "https://mythica-jewels-backend.onrender.com/api";
-// const API_BASE_URL = "http://localhost:8000/api";
 const RECAPTCHA_SITE_KEY = "6LfEdzUsAAAAADYLbog-_DVd_Clpu7mj3Lldy9oq";
 
 /* ---------------------- API HELPER ---------------------- */
@@ -33,6 +32,32 @@ const apiCall = async (endpoint, options = {}) => {
 
   if (!response.ok) {
     throw new Error(data?.message || "Something went wrong");
+  }
+
+  return data;
+};
+
+/* ---------------------- FILE UPLOAD HELPER ---------------------- */
+const apiUpload = async (endpoint, formData) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: "POST",
+    headers: {
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    body: formData,
+  });
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error("Invalid server response");
+  }
+
+  if (!response.ok) {
+    throw new Error(data?.message || "Upload failed");
   }
 
   return data;
@@ -207,4 +232,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export { apiCall, generateRecaptchaToken, RECAPTCHA_SITE_KEY };
+export { apiCall, apiUpload, generateRecaptchaToken, RECAPTCHA_SITE_KEY, API_BASE_URL };

@@ -9,6 +9,7 @@ export default function ProductImageFrame({
   badge,
   className = '',
   size = 'large',
+  onImageError,
 }) {
   const heightClass =
     size === 'large'
@@ -29,6 +30,7 @@ export default function ProductImageFrame({
           alt={alt}
           className="max-w-full max-h-full w-auto h-auto object-contain select-none"
           draggable={false}
+          onError={onImageError}
         />
       </div>
       {badge ? (

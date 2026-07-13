@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth, apiCall } from '../Cart/AuthContext';
 import { useCart } from '../Cart/CartContext';
 import { useTheme } from '../Cart/ThemeContext';
+import BrandLogo from '../ui/BrandLogo';
 
 export default function Navbar({ onNavigate, currentPage, onSearchSelect, onViewProduct }) {
   const [isSticky, setSticky] = useState(false);
@@ -96,32 +97,19 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${navClasses}`}>
         <div className="container mx-auto flex justify-between items-center px-4 sm:px-6 py-3.5 sm:py-4 max-w-7xl">
           {/* Logo */}
-          <motion.div 
+          <BrandLogo
+            variant={onHero ? 'hero' : 'default'}
             onClick={() => onNavigate('home')}
-            className="flex items-center space-x-2 sm:space-x-3 cursor-pointer flex-shrink-0"
-            whileHover={{ scale: 1.02 }}
-          >
-            <svg className={`w-8 h-8 sm:w-10 sm:h-10 ${onHero ? 'text-amber-400' : 'text-amber-800 dark:text-amber-500'}`} viewBox="0 0 100 100" fill="currentColor">
-              <path d="M50 10 L30 30 L20 30 L20 50 L10 60 L50 90 L90 60 L80 50 L80 30 L70 30 Z" />
-              <path d="M50 30 L40 40 L40 50 L50 60 L60 50 L60 40 Z" fill="white" opacity="0.3"/>
-            </svg>
-            <div className="flex flex-col">
-              <span className={`text-xl sm:text-2xl font-serif font-semibold tracking-[0.12em] ${onHero ? 'text-white' : 'text-stone-950 dark:text-white'}`}>
-                MYTHICA
-              </span>
-              <span className={`text-[0.6rem] sm:text-[0.65rem] tracking-[0.42em] font-medium ${onHero ? 'text-amber-200/90' : 'text-amber-900 dark:text-amber-400'}`}>
-                JEWELS
-              </span>
-            </div>
-          </motion.div>
+          />
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-10 font-medium">
             {['home', 'shop', 'about', 'contact'].map((page) => (
               <button 
                 key={page}
+                type="button"
                 onClick={() => onNavigate(page)} 
-                className={`relative text-[11px] uppercase tracking-[0.22em] transition-colors ${navLinkClass(page)}`}
+                className={`relative cursor-pointer text-[11px] uppercase tracking-[0.22em] transition-colors ${navLinkClass(page)}`}
               >
                 {page}
                 {currentPage === page && (
@@ -134,8 +122,9 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
             ))}
             {user?.role === 'admin' && (
               <button 
+                type="button"
                 onClick={() => onNavigate('admin')} 
-                className={`relative text-[11px] uppercase tracking-[0.22em] transition-colors ${navLinkClass('admin')}`}
+                className={`relative cursor-pointer text-[11px] uppercase tracking-[0.22em] transition-colors ${navLinkClass('admin')}`}
               >
                 Admin
                 {currentPage === 'admin' && (
@@ -152,10 +141,11 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
           <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
             {/* Theme Toggle — visible from md up (xs is not a default Tailwind breakpoint) */}
             <motion.button 
+              type="button"
               onClick={toggleTheme} 
               whileHover={{ scale: 1.1 }} 
               whileTap={{ scale: 0.9 }}
-              className={`hidden md:flex p-2 rounded-full transition-colors items-center justify-center ${
+              className={`hidden md:flex cursor-pointer p-2 rounded-full transition-colors items-center justify-center ${
                 onHero ? 'hover:bg-white/10' : 'hover:bg-stone-200/80 dark:hover:bg-slate-800'
               }`}
             >
@@ -172,9 +162,10 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
 
             {/* Search — same breakpoint as theme toggle */}
             <motion.button 
+              type="button"
               onClick={() => setSearchOpen(true)} 
               whileHover={{ scale: 1.1 }} 
-              className={`hidden md:flex p-2 rounded-full transition-colors items-center justify-center ${
+              className={`hidden md:flex cursor-pointer p-2 rounded-full transition-colors items-center justify-center ${
                 onHero ? 'hover:bg-white/10' : 'hover:bg-stone-200/80 dark:hover:bg-slate-800'
               }`}
             >
@@ -187,9 +178,10 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
               <>
                 {/* Cart */}
                 <motion.button 
+                  type="button"
                   onClick={toggleCart} 
                   whileHover={{ scale: 1.1 }} 
-                  className={`relative p-2 rounded-full transition-colors ${
+                  className={`relative cursor-pointer p-2 rounded-full transition-colors ${
                     onHero ? 'hover:bg-white/10' : 'hover:bg-stone-200/80 dark:hover:bg-slate-800'
                   }`}
                 >
@@ -207,8 +199,9 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
                 <div className={`hidden lg:flex items-center space-x-3 pl-3 border-l ${onHero ? 'border-white/25' : 'border-stone-200 dark:border-slate-700'}`}>
                   <span className={`text-sm font-medium ${onHero ? 'text-white/90' : 'text-stone-950 dark:text-stone-200'}`}>{user.name}</span>
                   <button 
+                    type="button"
                     onClick={logout} 
-                    className={`text-sm font-medium transition-colors ${onHero ? 'text-white/75 hover:text-white' : 'text-stone-800 dark:text-slate-400 hover:text-amber-900 dark:hover:text-amber-400'}`}
+                    className={`cursor-pointer text-sm font-medium transition-colors ${onHero ? 'text-white/75 hover:text-white' : 'text-stone-800 dark:text-slate-400 hover:text-amber-900 dark:hover:text-amber-400'}`}
                   >
                     Logout
                   </button>
@@ -216,8 +209,9 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
               </>
             ) : (
               <button 
+                type="button"
                 onClick={() => onNavigate('auth')} 
-                className={`hidden lg:block px-6 py-2 rounded-full font-medium text-[11px] uppercase tracking-[0.2em] transition-colors ${
+                className={`hidden lg:block cursor-pointer px-6 py-2 rounded-full font-medium text-[11px] uppercase tracking-[0.2em] transition-colors ${
                   onHero
                     ? 'border border-white/80 text-white hover:bg-white hover:text-stone-900'
                     : 'bg-amber-800 hover:bg-amber-900 text-white dark:bg-amber-700 dark:hover:bg-amber-600'
@@ -229,7 +223,8 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
 
             {/* Mobile Menu Button - Always visible on mobile */}
             <button 
-              className="lg:hidden p-2 -mr-2 flex items-center justify-center" 
+              type="button"
+              className="lg:hidden cursor-pointer p-2 -mr-2 flex items-center justify-center" 
               onClick={() => setMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -258,8 +253,9 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
               <div className="container mx-auto px-6 py-4 space-y-4">
                 {/* Mobile Theme Toggle */}
                 <button 
+                  type="button"
                   onClick={toggleTheme}
-                  className="flex items-center justify-between w-full text-left text-sm uppercase tracking-wider text-stone-900 dark:text-slate-300 font-medium py-2"
+                  className="flex cursor-pointer items-center justify-between w-full text-left text-sm uppercase tracking-wider text-stone-900 dark:text-slate-300 font-medium py-2"
                 >
                   <span>Theme</span>
                   {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
@@ -267,8 +263,9 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
 
                 {/* Mobile Search */}
                 <button 
+                  type="button"
                   onClick={() => { setSearchOpen(true); setMenuOpen(false); }}
-                  className="flex items-center justify-between w-full text-left text-sm uppercase tracking-wider text-stone-900 dark:text-slate-300 font-medium py-2"
+                  className="flex cursor-pointer items-center justify-between w-full text-left text-sm uppercase tracking-wider text-stone-900 dark:text-slate-300 font-medium py-2"
                 >
                   <span>Search</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,8 +277,9 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
                   {['home', 'shop', 'about', 'contact'].map((page) => (
                     <button 
                       key={page}
+                      type="button"
                       onClick={() => { onNavigate(page); setMenuOpen(false); }} 
-                      className={`block w-full text-left text-sm uppercase tracking-wider py-2 transition-colors ${
+                      className={`block cursor-pointer w-full text-left text-sm uppercase tracking-wider py-2 transition-colors ${
                         currentPage === page 
                           ? 'text-amber-900 dark:text-amber-400 font-semibold' 
                           : 'text-stone-950 dark:text-slate-300 hover:text-amber-900 dark:hover:text-amber-400'
@@ -292,8 +290,9 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
                   ))}
                   {user?.role === 'admin' && (
                     <button 
+                      type="button"
                       onClick={() => { onNavigate('admin'); setMenuOpen(false); }} 
-                      className={`block w-full text-left text-sm uppercase tracking-wider py-2 transition-colors ${
+                      className={`block cursor-pointer w-full text-left text-sm uppercase tracking-wider py-2 transition-colors ${
                         currentPage === 'admin' 
                           ? 'text-amber-900 dark:text-amber-400 font-semibold' 
                           : 'text-stone-950 dark:text-slate-300 hover:text-amber-900 dark:hover:text-amber-400'
@@ -310,16 +309,18 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
                       Signed in as <span className="font-semibold">{user.name}</span>
                     </div>
                     <button 
+                      type="button"
                       onClick={() => { logout(); setMenuOpen(false); }} 
-                      className="block w-full text-left text-sm font-medium text-stone-800 dark:text-slate-400 hover:text-amber-900 dark:hover:text-amber-400 transition-colors py-2"
+                      className="block cursor-pointer w-full text-left text-sm font-medium text-stone-800 dark:text-slate-400 hover:text-amber-900 dark:hover:text-amber-400 transition-colors py-2"
                     >
                       Logout
                     </button>
                   </div>
                 ) : (
                   <button 
+                    type="button"
                     onClick={() => { onNavigate('auth'); setMenuOpen(false); }} 
-                    className="block w-full bg-amber-700 text-white px-6 py-3 rounded-full font-medium text-sm mt-4"
+                    className="block cursor-pointer w-full bg-amber-700 text-white px-6 py-3 rounded-full font-medium text-sm mt-4"
                   >
                     Sign In
                   </button>
@@ -383,7 +384,7 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
                         <button
                           type="button"
                           onClick={() => handlePickProduct(p)}
-                          className="w-full flex gap-3 px-4 py-3 text-left hover:bg-stone-100 dark:hover:bg-slate-800/80 transition-colors"
+                          className="w-full cursor-pointer flex gap-3 px-4 py-3 text-left hover:bg-stone-100 dark:hover:bg-slate-800/80 transition-colors"
                         >
                           <img
                             src={p.imageUrl || p.image || 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=80&h=80&fit=crop'}
@@ -410,7 +411,7 @@ export default function Navbar({ onNavigate, currentPage, onSearchSelect, onView
                 <button
                   type="button"
                   onClick={() => setSearchOpen(false)}
-                  className="text-xs uppercase tracking-wider font-medium text-stone-800 dark:text-stone-400 hover:text-amber-900 dark:hover:text-amber-400"
+                  className="cursor-pointer text-xs uppercase tracking-wider font-medium text-stone-800 dark:text-stone-400 hover:text-amber-900 dark:hover:text-amber-400"
                 >
                   Close
                 </button>

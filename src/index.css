@@ -17,6 +17,15 @@
     @apply font-sans antialiased bg-mj-canvas text-stone-950;
   }
 
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
   .dark body {
     @apply bg-neutral-950 text-stone-100;
   }

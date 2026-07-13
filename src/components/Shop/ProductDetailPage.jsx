@@ -5,13 +5,16 @@ import { apiCall } from '../Cart/AuthContext';
 import { useAuth } from '../Cart/AuthContext';
 import { useCart } from '../Cart/CartContext';
 import ProductImageFrame from '../ui/ProductImageFrame';
+import ProductImage from '../ui/ProductImage';
 import { PDP_TRUST } from '../ui/JewelryIcons';
+
+import { getPrimaryProductImage, getProductImages } from '../../utils/productImages';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=900&h=1200&fit=crop';
 
 function productImage(product) {
-  return product?.imageUrl || product?.image || FALLBACK_IMAGE;
+  return getPrimaryProductImage(product, FALLBACK_IMAGE);
 }
 
 function formatPrice(price) {
@@ -68,6 +71,12 @@ export default function ProductDetailPage({ productId, onNavigate, onViewProduct
       .slice(0, 4);
   }, [products, product]);
 
+  const galleryImages = useMemo(() => {
+    if (!product) return [];
+    const imgs = getProductImages(product);
+    return imgs.filter((url, i, arr) => arr.indexOf(url) === i);
+  }, [product]);
+
   const inStock = (product?.stock ?? 1) > 0;
   const maxQty = Math.min(10, Math.max(1, product?.stock ?? 10));
 
@@ -116,7 +125,8 @@ export default function ProductDetailPage({ productId, onNavigate, onViewProduct
     );
   }
 
-  const img = productImage(product);
+  const displayGallery =
+    galleryImages.length > 0 ? galleryImages : [productImage(product)];
 
   return (
     <div className="min-h-screen bg-mj-canvas dark:bg-neutral-950 pt-24 pb-28 md:pb-24">
@@ -133,26 +143,64 @@ export default function ProductDetailPage({ productId, onNavigate, onViewProduct
           <span className="text-stone-900 dark:text-stone-300">{product.name}</span>
         </nav>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,420px)] xl:grid-cols-[minmax(0,1fr)_460px] gap-10 lg:gap-14 xl:gap-20 items-start">
+          {/* Editorial gallery — all images stacked (luxury PDP style) */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="lg:sticky lg:top-28"
+            className="space-y-6 md:space-y-8 lg:space-y-10"
           >
-            <ProductImageFrame
-              src={img}
-              alt={product.name}
-              badge={product.category}
-              size="large"
-            />
+            {displayGallery.length > 1 ? (
+              <p className="text-[10px] uppercase tracking-[0.32em] text-stone-500 dark:text-stone-500 font-medium lg:hidden">
+                {displayGallery.length} views
+              </p>
+            ) : null}
+
+            {displayGallery.map((src, index) => (
+              <motion.figure
+                key={`${src.slice(0, 48)}-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                className="relative overflow-hidden bg-gradient-to-b from-stone-100 via-white to-stone-50 dark:from-neutral-900 dark:via-neutral-950 dark:to-neutral-900"
+              >
+                <div className="flex items-center justify-center w-full min-h-[320px] sm:min-h-[400px] md:min-h-[480px] lg:min-h-[520px] p-8 sm:p-12 md:p-16">
+                  <ProductImage
+                    src={src}
+                    product={product}
+                    alt={`${product.name} — view ${index + 1}`}
+                    className="max-w-full max-h-[min(70vh,720px)] w-auto h-auto object-contain select-none"
+                  />
+                </div>
+
+                {index === 0 && product.category ? (
+                  <figcaption className="absolute top-4 left-4 z-10 px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-semibold bg-white/95 dark:bg-neutral-950/90 text-stone-900 dark:text-stone-200 ring-1 ring-stone-200/80 dark:ring-stone-700">
+                    {product.category}
+                  </figcaption>
+                ) : null}
+
+                {displayGallery.length > 1 ? (
+                  <span className="absolute bottom-4 right-4 z-10 text-[10px] uppercase tracking-[0.28em] text-stone-500 dark:text-stone-500 font-medium tabular-nums">
+                    {String(index + 1).padStart(2, '0')} / {String(displayGallery.length).padStart(2, '0')}
+                  </span>
+                ) : null}
+              </motion.figure>
+            ))}
+
+            {displayGallery.length > 1 ? (
+              <p className="hidden lg:block text-center text-[10px] uppercase tracking-[0.28em] text-stone-400 dark:text-stone-600 pt-2">
+                Scroll to explore every angle
+              </p>
+            ) : null}
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.06 }}
-            className="flex flex-col"
+            className="flex flex-col lg:sticky lg:top-28 lg:self-start"
           >
             <p className="text-[11px] uppercase tracking-[0.28em] text-stone-500 dark:text-stone-500 mb-3">
               Mythica Jewels

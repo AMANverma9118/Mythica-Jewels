@@ -93,7 +93,7 @@ export function BrandMark({ className = 'w-10 h-10' }) {
   return (
     <svg className={className} viewBox="0 0 100 100" fill="currentColor" aria-hidden>
       <path d="M50 10 L30 30 L20 30 L20 50 L10 60 L50 90 L90 60 L80 50 L80 30 L70 30 Z" />
-      <path d="M50 30 L40 40 L40 50 L50 60 L60 50 L60 40 Z" fill="white" opacity="0.25" />
+      <path d="M50 30 L40 40 L40 50 L50 60 L60 50 L60 40 Z" fill="white" opacity="0.3" />
     </svg>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BrandMark, IconLock, IconShield, IconTruck, IconReturn, IconLocation, IconPhone, IconMail } from '../ui/JewelryIcons';
+import BrandLogo from '../ui/BrandLogo';
+import { IconLock, IconShield, IconTruck, IconReturn, IconLocation, IconPhone, IconMail } from '../ui/JewelryIcons';
 
 const FOOTER_TRUST = [
   { Icon: IconLock, label: 'Secure payment' },
@@ -17,12 +18,9 @@ export default function Footer() {
       <div className="container mx-auto max-w-7xl px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="space-y-5">
-            <div className="flex items-center gap-3">
-              <BrandMark className="w-10 h-10 text-stone-400" />
-              <h2 className="text-lg font-serif font-medium text-stone-100 tracking-[0.06em]">
-                MYTHICA JEWELS
-              </h2>
-            </div>
+            <Link to="/" className="inline-block hover:opacity-90 transition-opacity">
+              <BrandLogo variant="footer" />
+            </Link>
             <p className="text-stone-500 text-sm leading-relaxed font-light max-w-xs">
               Crafting timeless elegance and celebrating life&apos;s precious moments since 1990.
             </p>

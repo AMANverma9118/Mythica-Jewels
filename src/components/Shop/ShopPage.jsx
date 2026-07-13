@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../Cart/AuthContext';
 import { useCart } from '../Cart/CartContext';
 import { apiCall } from '../Cart/AuthContext';
-import ProductImageFrame from '../ui/ProductImageFrame';
+import ProductImage from '../ui/ProductImage';
 
 function productMatchesSearch(product, rawQuery) {
   const q = (rawQuery || '').trim().toLowerCase();
@@ -13,6 +13,101 @@ function productMatchesSearch(product, rawQuery) {
   const desc = (product.description || '').toLowerCase();
   const cat = (product.category || '').toLowerCase();
   return name.includes(q) || desc.includes(q) || cat.includes(q);
+}
+
+function formatCategory(cat) {
+  if (!cat || cat === 'all') return 'All';
+  return cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
+}
+
+function LuxuryProductCard({ product, index, user, onViewProduct, onAddToCart }) {
+  const [adding, setAdding] = useState(false);
+
+  const handleAdd = async (e) => {
+    e.stopPropagation();
+    if (adding) return;
+    setAdding(true);
+    try {
+      await onAddToCart(product._id);
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.04, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      className="group flex flex-col h-full bg-white dark:bg-neutral-900 ring-1 ring-stone-200/80 dark:ring-stone-800 overflow-hidden hover:ring-amber-800/30 dark:hover:ring-amber-600/40 hover:shadow-[0_12px_40px_-16px_rgba(28,25,23,0.18)] dark:hover:shadow-[0_12px_40px_-16px_rgba(0,0,0,0.45)] transition-all duration-300"
+    >
+      {/* Compact image — jewelry framed, not full-bleed */}
+      <button
+        type="button"
+        onClick={() => onViewProduct?.(product._id)}
+        className="relative w-full aspect-[5/6] max-h-[240px] sm:max-h-[260px] overflow-hidden bg-gradient-to-b from-stone-100 to-stone-50 dark:from-neutral-800 dark:to-neutral-900 cursor-pointer"
+      >
+        <ProductImage
+          product={product}
+          alt={product.name}
+          className="absolute inset-0 w-full h-full object-contain p-5 transition-transform duration-500 group-hover:scale-105"
+        />
+        {product.category ? (
+          <span className="absolute top-3 left-3 z-10 px-2 py-0.5 text-[9px] uppercase tracking-[0.2em] font-medium text-stone-600 dark:text-stone-400 bg-white/90 dark:bg-neutral-950/80">
+            {product.category}
+          </span>
+        ) : null}
+      </button>
+
+      {/* Info + actions */}
+      <div className="flex flex-col flex-grow p-4 sm:p-5">
+        <button
+          type="button"
+          onClick={() => onViewProduct?.(product._id)}
+          className="text-left w-full group/title"
+        >
+          <h3 className="font-serif text-base sm:text-lg font-medium text-stone-900 dark:text-stone-50 leading-snug line-clamp-1 group-hover/title:text-amber-900 dark:group-hover/title:text-amber-400 transition-colors">
+            {product.name}
+          </h3>
+        </button>
+
+        {product.description ? (
+          <p className="mt-1.5 text-xs text-stone-500 dark:text-stone-500 font-light leading-relaxed line-clamp-2 min-h-[2.5rem]">
+            {product.description}
+          </p>
+        ) : (
+          <p className="mt-1.5 text-xs text-stone-400 dark:text-stone-600 italic min-h-[2.5rem]">
+            Handcrafted fine jewelry
+          </p>
+        )}
+
+        <p className="mt-3 font-serif text-base text-stone-800 dark:text-stone-200 tabular-nums">
+          ₹{product.price?.toLocaleString('en-IN')}
+        </p>
+
+        <div className="mt-auto pt-4 flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => onViewProduct?.(product._id)}
+            className="w-full py-2.5 text-[10px] uppercase tracking-[0.2em] font-medium text-white bg-stone-900 hover:bg-amber-900 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-amber-400 transition-colors duration-300"
+          >
+            View details
+          </button>
+
+          {user ? (
+            <button
+              type="button"
+              onClick={handleAdd}
+              disabled={adding}
+              className="w-full py-2.5 text-[10px] uppercase tracking-[0.2em] font-medium text-stone-700 dark:text-stone-300 ring-1 ring-stone-300 dark:ring-stone-600 hover:ring-stone-900 hover:text-stone-900 dark:hover:ring-stone-300 dark:hover:text-white transition-colors duration-300 disabled:opacity-50"
+            >
+              {adding ? 'Adding…' : 'Add to bag'}
+            </button>
+          ) : null}
+        </div>
+      </div>
+    </motion.article>
+  );
 }
 
 export default function ShopPage({ onNavigate, onViewProduct, textSearchFilter = '', onClearTextSearch }) {
@@ -54,195 +149,184 @@ export default function ShopPage({ onNavigate, onViewProduct, textSearchFilter =
     return 0;
   });
 
-  const categories = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
+  const categories = ['all', ...new Set(products.map((p) => p.category).filter(Boolean))];
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-mj-canvas dark:bg-neutral-950 pt-20">
+      <div className="min-h-screen flex items-center justify-center bg-[#f7f5f2] dark:bg-neutral-950 pt-20">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-14 w-14 border-2 border-amber-800/30 border-t-amber-800 dark:border-amber-600/30 dark:border-t-amber-500"></div>
-          <p className="mt-5 text-stone-800 dark:text-stone-400 text-[11px] uppercase tracking-[0.28em] font-medium">Loading collection</p>
+          <div className="inline-block w-12 h-12 border border-stone-300 dark:border-stone-700 border-t-amber-900 dark:border-t-amber-500 rounded-full animate-spin" />
+          <p className="mt-6 text-[10px] uppercase tracking-[0.35em] text-stone-500 dark:text-stone-500 font-medium">
+            Curating collection
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-20 bg-mj-canvas dark:bg-neutral-950">
-      <div className="container mx-auto max-w-7xl px-6">
-        {/* Breadcrumb + header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -12 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          className="mb-10 md:mb-14"
-        >
-          <nav className="text-[11px] uppercase tracking-[0.2em] text-stone-600 dark:text-stone-500 mb-6 font-medium">
-            <Link to="/" className="hover:text-stone-900 dark:hover:text-stone-200 transition-colors">
-              Home
-            </Link>
-            <span className="mx-2 text-stone-400 dark:text-stone-600">/</span>
-            <span className="text-stone-800 dark:text-stone-300">Collection</span>
-          </nav>
-          <p className="text-[11px] uppercase tracking-[0.3em] text-amber-900 dark:text-amber-500 mb-3 font-semibold">All jewelry</p>
-          <h1 className="text-4xl md:text-5xl font-serif font-semibold text-stone-900 dark:text-white tracking-tight mb-3">
-            The collection
-          </h1>
-          <p className="mj-body-muted max-w-xl text-base">
-            Filter by category, sort by price or name — every design is crafted to the same standard.
-          </p>
-          <p className="mt-4 text-sm text-stone-700 dark:text-stone-500">
-            <span className="font-semibold text-stone-900 dark:text-stone-300">{sortedProducts.length}</span>
-            {' '}design{sortedProducts.length !== 1 ? 's' : ''} shown
-            {textSearchFilter.trim() ? (
-              <span className="block mt-2 text-[11px] uppercase tracking-[0.18em] text-amber-900 dark:text-amber-500 font-semibold">
-                Filtered by search
-              </span>
-            ) : null}
-          </p>
-        </motion.div>
-
-        {textSearchFilter.trim() ? (
-          <div className="mb-6 flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-slate-900 px-4 py-2 text-sm text-stone-800 dark:text-stone-200 ring-1 ring-stone-200 dark:ring-slate-700">
-              <span className="text-stone-700 dark:text-stone-500 text-xs uppercase tracking-wider font-medium">Search</span>
-              <span className="font-medium">&ldquo;{textSearchFilter.trim()}&rdquo;</span>
-              {onClearTextSearch ? (
-                <button
-                  type="button"
-                  onClick={onClearTextSearch}
-                  className="ml-1 text-xs uppercase tracking-wider text-amber-800 dark:text-amber-400 hover:underline"
-                >
-                  Clear
-                </button>
-              ) : null}
-            </span>
-          </div>
-        ) : null}
-
-        {/* Filters & sort — toolbar */}
-        <div className="sticky top-[4.5rem] z-30 -mx-1 px-1 py-3 mb-10 bg-mj-canvas/95 dark:bg-neutral-950/95 backdrop-blur-md border-y border-stone-200/90 dark:border-stone-800">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-            <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
-            {categories.map(cat => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setFilter(cat)}
-                className={`px-4 py-2.5 text-[10px] uppercase tracking-[0.18em] font-medium transition-all rounded-full ${
-                  filter === cat
-                    ? 'bg-stone-900 text-white dark:bg-amber-700 dark:text-white shadow-md'
-                    : 'bg-white dark:bg-slate-900 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-slate-800 ring-1 ring-stone-200/90 dark:ring-slate-700'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+    <div className="min-h-screen bg-[#f7f5f2] dark:bg-neutral-950">
+      {/* Editorial hero — compact */}
+      <section className="pt-24 pb-8 md:pt-28 md:pb-10 border-b border-stone-200/80 dark:border-stone-800/80">
+        <div className="container mx-auto max-w-7xl px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col md:flex-row md:items-end md:justify-between gap-6"
+          >
+            <div>
+              <nav className="text-[10px] uppercase tracking-[0.25em] text-stone-500 mb-4 font-medium">
+                <Link to="/" className="hover:text-stone-800 dark:hover:text-stone-300 transition-colors">Home</Link>
+                <span className="mx-2 text-stone-300">/</span>
+                <span className="text-stone-700 dark:text-stone-400">Collection</span>
+              </nav>
+              <h1 className="font-serif text-3xl md:text-4xl font-medium text-stone-900 dark:text-white tracking-tight">
+                The collection
+              </h1>
             </div>
-
-            <div className="flex justify-center lg:justify-end">
-              <label className="sr-only" htmlFor="shop-sort">Sort</label>
-              <select
-                id="shop-sort"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="min-w-[200px] px-5 py-2.5 bg-white dark:bg-slate-900 ring-1 ring-stone-200 dark:ring-slate-700 text-stone-800 dark:text-stone-200 text-[11px] uppercase tracking-[0.12em] outline-none rounded-full cursor-pointer"
-              >
-                <option value="featured">Sort: Featured</option>
-                <option value="price-low">Sort: Price low → high</option>
-                <option value="price-high">Sort: Price high → low</option>
-                <option value="name">Sort: Name A–Z</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Products grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 items-stretch">
-          {sortedProducts.map((product, index) => (
-            <motion.article
-              key={product._id}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.04, duration: 0.45 }}
-              role="button"
-              tabIndex={0}
-              onClick={() => onViewProduct?.(product._id)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onViewProduct?.(product._id);
-                }
-              }}
-              className="group relative bg-white dark:bg-neutral-900 overflow-hidden h-full flex flex-col rounded-sm ring-1 ring-stone-200/90 dark:ring-stone-800 shadow-sm hover:shadow-lg hover:ring-stone-400/60 dark:hover:ring-stone-600 transition-all duration-300 cursor-pointer"
-            >
-              <div className="relative shrink-0">
-                <ProductImageFrame
-                  src={product.imageUrl || product.image || 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=600&fit=crop'}
-                  alt={product.name}
-                  size="small"
-                  className="rounded-none ring-0 group-hover:opacity-95 transition-opacity"
-                />
-                {product.category ? (
-                  <div className="absolute top-3 left-3 z-10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium text-stone-800 dark:text-stone-200 bg-white/95 dark:bg-neutral-950/90 ring-1 ring-stone-200/80 dark:ring-stone-700 pointer-events-none">
-                    {product.category}
-                  </div>
-                ) : null}
-                <span className="absolute bottom-3 left-3 right-3 z-10 py-2.5 text-center text-[10px] uppercase tracking-[0.2em] font-medium text-white bg-stone-900/90 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                  View details
-                </span>
-              </div>
-              
-              <div className="p-5 md:p-6 text-center flex flex-col flex-grow min-h-0">
-                <h3 className="text-base font-serif font-medium text-stone-900 dark:text-stone-100 mb-2 tracking-wide line-clamp-2 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-colors">
-                  {product.name}
-                </h3>
-                <p className="text-stone-700 dark:text-stone-400 text-sm mb-3 line-clamp-2 leading-relaxed">
-                  {product.description}
-                </p>
-                <div className="mt-auto flex flex-col items-center gap-3">
-                  <p className="text-stone-900 dark:text-stone-200 text-lg font-medium tracking-wide tabular-nums">
-                    ₹{product.price?.toLocaleString('en-IN')}
-                  </p>
-                  {user ? (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addToCart(product._id);
-                      }}
-                      className="w-full py-2.5 text-[10px] uppercase tracking-[0.18em] font-medium rounded-sm ring-1 ring-stone-300 dark:ring-stone-600 text-stone-900 dark:text-stone-100 hover:bg-stone-900 hover:text-white dark:hover:bg-stone-100 dark:hover:text-stone-900 transition-colors"
-                    >
-                      Quick add
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            </motion.article>
-          ))}
-        </div>
-
-        {sortedProducts.length === 0 && (
-          <div className="text-center py-24 mj-panel px-6">
-            <p className="text-xl font-serif text-stone-800 dark:text-stone-200 mb-2">
-              {textSearchFilter.trim() ? 'No matches for your search' : 'No pieces in this category'}
+            <p className="text-sm text-stone-500 dark:text-stone-500 font-light md:text-right max-w-sm">
+              <span className="font-medium text-stone-800 dark:text-stone-300">{sortedProducts.length}</span>
+              {' '}piece{sortedProducts.length !== 1 ? 's' : ''} — tap <span className="italic">View details</span> to explore each design.
             </p>
-            <p className="text-stone-700 dark:text-stone-500 text-sm mb-4">
-              {textSearchFilter.trim()
-                ? 'Try different words or clear the search bar above.'
-                : 'Try another filter or view the full collection.'}
-            </p>
-            {textSearchFilter.trim() && onClearTextSearch ? (
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Search chip */}
+      {textSearchFilter.trim() ? (
+        <div className="container mx-auto max-w-7xl px-6 pt-8">
+          <div className="inline-flex items-center gap-3 text-sm text-stone-600 dark:text-stone-400">
+            <span className="text-[10px] uppercase tracking-[0.25em]">Results for</span>
+            <span className="font-serif text-lg text-stone-900 dark:text-stone-100">&ldquo;{textSearchFilter.trim()}&rdquo;</span>
+            {onClearTextSearch ? (
               <button
                 type="button"
                 onClick={onClearTextSearch}
-                className="mj-btn-primary text-xs uppercase px-6 py-2.5 rounded-full"
+                className="mj-link-underline ml-2"
               >
-                Clear search
+                Clear
               </button>
             ) : null}
           </div>
-        )}
+        </div>
+      ) : null}
+
+      {/* Filters — understated luxury tabs */}
+      <div className="sticky top-[4.5rem] z-30 bg-[#f7f5f2]/90 dark:bg-neutral-950/90 backdrop-blur-md border-b border-stone-200/60 dark:border-stone-800/60">
+        <div className="container mx-auto max-w-7xl px-6 py-5">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 justify-center md:justify-start">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setFilter(cat)}
+                  className={`mj-shop-filter ${filter === cat ? 'mj-shop-filter--active' : ''}`}
+                >
+                  {formatCategory(cat)}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex justify-center md:justify-end">
+              <label className="sr-only" htmlFor="shop-sort">
+                Sort collection
+              </label>
+              <div className="relative">
+                <select
+                  id="shop-sort"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="appearance-none bg-transparent pl-0 pr-8 py-1 text-[11px] uppercase tracking-[0.2em] text-stone-600 dark:text-stone-400 font-medium cursor-pointer outline-none border-b border-stone-300 dark:border-stone-700 hover:text-stone-900 dark:hover:text-stone-200 transition-colors"
+                >
+                  <option value="featured">Featured</option>
+                  <option value="price-low">Price — ascending</option>
+                  <option value="price-high">Price — descending</option>
+                  <option value="name">Name A–Z</option>
+                </select>
+                <svg
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-stone-400 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Product grid — compact 4-column layout */}
+      <section className="py-10 md:py-14">
+        <div className="container mx-auto max-w-7xl px-6">
+          {sortedProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+              {sortedProducts.map((product, index) => (
+                <LuxuryProductCard
+                  key={product._id}
+                  product={product}
+                  index={index}
+                  user={user}
+                  onViewProduct={onViewProduct}
+                  onAddToCart={addToCart}
+                />
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-24 md:py-32"
+            >
+              <p className="font-serif text-2xl md:text-3xl text-stone-800 dark:text-stone-200 mb-4">
+                {textSearchFilter.trim() ? 'No pieces match your search' : 'This category is empty'}
+              </p>
+              <p className="text-stone-500 dark:text-stone-500 font-light text-sm mb-8 max-w-md mx-auto leading-relaxed">
+                {textSearchFilter.trim()
+                  ? 'Try a different term, or explore the full collection.'
+                  : 'Browse all categories to discover our complete edit.'}
+              </p>
+              {textSearchFilter.trim() && onClearTextSearch ? (
+                <button type="button" onClick={onClearTextSearch} className="mj-link-underline">
+                  View all pieces
+                </button>
+              ) : (
+                <button type="button" onClick={() => setFilter('all')} className="mj-link-underline">
+                  View all pieces
+                </button>
+              )}
+            </motion.div>
+          )}
+        </div>
+      </section>
+
+      {/* Bottom CTA — boutique invitation */}
+      {sortedProducts.length > 0 ? (
+        <section className="border-t border-stone-200/80 dark:border-stone-800/80 py-16 md:py-20">
+          <div className="container mx-auto max-w-7xl px-6 text-center">
+            <p className="text-[10px] uppercase tracking-[0.35em] text-amber-900 dark:text-amber-500 mb-4 font-medium">
+              Bespoke service
+            </p>
+            <h2 className="font-serif text-2xl md:text-3xl text-stone-900 dark:text-white mb-4 tracking-tight">
+              Cannot find what you seek?
+            </h2>
+            <p className="text-stone-500 dark:text-stone-500 font-light text-sm mb-8 max-w-md mx-auto">
+              Our artisans welcome private consultations for custom commissions and heirloom restorations.
+            </p>
+            <button
+              type="button"
+              onClick={() => onNavigate?.('contact')}
+              className="mj-link-underline"
+            >
+              Request consultation
+            </button>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }
