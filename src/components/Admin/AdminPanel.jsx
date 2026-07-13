@@ -293,8 +293,14 @@ export default function AdminPanel() {
                   <div>
                     <label className={labelClass}>Product images *</label>
                     <p className="text-xs text-stone-600 dark:text-stone-500 mb-3 font-light">
-                      Upload from your PC (JPEG, PNG, WebP, GIF — up to 8 images, 2MB each). Photos are saved with the product.
+                      Upload from your PC (JPEG, PNG, WebP, GIF — up to 8 images, 2MB each). Images are stored in the database and work after deploy.
                     </p>
+
+                    {formData.images.some((u) => u.startsWith('/uploads/') || u.includes('localhost')) ? (
+                      <p className="mb-3 text-xs text-amber-900 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 ring-1 ring-amber-200 dark:ring-amber-900/50 rounded-lg px-3 py-2 leading-relaxed">
+                        Some images use old file links that break on the live site. Remove them (×), re-upload from your PC, then save.
+                      </p>
+                    ) : null}
 
                     <label className="flex flex-col items-center justify-center w-full py-8 px-4 border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-lg cursor-pointer hover:border-amber-800 dark:hover:border-amber-500 hover:bg-stone-50 dark:hover:bg-slate-800/50 transition-colors">
                       <input
